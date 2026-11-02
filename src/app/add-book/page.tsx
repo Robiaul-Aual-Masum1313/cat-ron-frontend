@@ -4,7 +4,7 @@
 // import { toast } from "sonner";
 import { BookOpen } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
-import { redirect } from "next/navigation";
+// import { redirect } from "next/navigation";
 import { toast } from "react-toastify";
 
 const categories = [
@@ -49,15 +49,11 @@ export default function AddBookPage() {
       const resultData = await res.json()
       if(resultData){
         toast.success("Book added successfully!");
-        redirect('/my-books')
       }
-      console.log(resultData);
        
-
-
-      if (!res.ok) {
+      // if (!res.ok) {
         
-      }
+      // }
 
     } catch (error) {
       toast.error("Failed to add book.");

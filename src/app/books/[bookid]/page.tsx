@@ -7,12 +7,11 @@ import {
   Copy,
   UserRound,
   Mail,
-  Bookmark,
 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { notFound } from "next/navigation";
+import BorrowBookModal from "@/components/books/BorrowBookModal";
 
 interface singleBookProps {
   params: {
@@ -138,7 +137,8 @@ export default async function BookDetailsPage({params} : singleBookProps) {
 
             {/* Borrow Button */}
             <div className="mt-8">
-              <Button
+              <BorrowBookModal book = {book}/>
+              {/* <Button
                 size="lg"
                 className="w-full gap-2"
                 disabled={book.availableCopies <= 0}
@@ -147,7 +147,7 @@ export default async function BookDetailsPage({params} : singleBookProps) {
                 {book.availableCopies > 0
                   ? "Borrow This Book"
                   : "Currently Unavailable"}
-              </Button>
+              </Button> */}
 
               {book.availableCopies <= 0 && (
                 <p className="mt-2 text-center text-xs text-destructive">

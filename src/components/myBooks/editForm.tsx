@@ -1,16 +1,9 @@
-
 "use client";
 
 import { useState } from "react";
 import Image from "next/image";
-import { redirect, useRouter } from "next/navigation";
-import {
-  BookOpen,
-  Pencil,
-  Trash2,
-  UserRound,
-  Plus,
-} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { BookOpen, Pencil, Trash2, UserRound, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -35,83 +28,97 @@ import {
 import { Book } from "@/types/dataTypes";
 import { toast } from "react-toastify";
 
-
-
 interface MyBooksClientProps {
   initialBooks: Book[];
 }
 
-const categories = [
-  "Fiction",
-  "Science",
-  "History",
-  "Kids",
-  "Others",
-];
+const categories = ["Fiction", "Science", "History", "Kids", "Others"];
 
 const inputClass =
   "w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20";
 
 const labelClass = "mb-2 block text-sm font-medium";
 
-export default function MyBooksEdit({
-  initialBooks
-}: MyBooksClientProps) {
-    const router = useRouter()
+export default function MyBooksEdit({ initialBooks }: MyBooksClientProps) {
+  const router = useRouter();
 
-  const [books, setBooks] = useState(initialBooks);
+  const [books, setBooks] = useState<Book[]>(initialBooks);
   const [editingBook, setEditingBook] = useState<Book | null>(null);
   const [deletingBook, setDeletingBook] = useState<Book | null>(null);
-  console.log(editingBook);
-  
 
   // Update Book
-  const handleUpdate = async (
-    e: React.SubmitEvent<HTMLFormElement>
-  ) => {
+  const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const formData = new FormData(e.target);
-    const updateData = Object.fromEntries(formData.entries()) 
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/books/${editingBook._id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updateData),
-      });
+    // Null guard: fixes "editingBook is possibly null"
+    if (!editingBook) return;
 
-      const result = await res.json();
+    const formData = new FormData(e.currentTarget);
+    const updateData: Record<string, unknown> = Object.fromEntries(
+      formData.entries()
+    );
+
+    // FormData values are strings, so convert the number field
+    updateData.totalCopies = Number(updateData.totalCopies);
+
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/books/${editingBook._id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updateData),
+        }
+      );
+
+      // fetch does not throw on 4xx/5xx, so check manually
+      if (!res.ok) throw new Error("Update failed");
+
+      // Update the UI immediately (useState won't re-read initialBooks)
+      setBooks((prev) =>
+        prev.map((b) =>
+          b._id === editingBook._id ? ({ ...b, ...updateData } as Book) : b
+        )
+      );
+
       setEditingBook(null);
       toast.success("Book updated successfully!");
-      
+      router.refresh();
     } catch (error) {
-      toast.error('Somethinh worng. Book Data not updated');
-    } 
-    router.refresh()
+      toast.error("Something went wrong. Book data not updated.");
+    }
   };
 
   // Delete Book
   const handleDelete = async () => {
+    if (!deletingBook) return;
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/books/${deletingBook._id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/books/${deletingBook._id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
-      const result = await res.json();
+      if (!res.ok) throw new Error("Delete failed");
+
+      // Remove from the UI immediately
+      setBooks((prev) => prev.filter((b) => b._id !== deletingBook._id));
+
       setDeletingBook(null);
       toast.success("Book deleted successfully!");
+      router.refresh();
     } catch (error) {
-      toast.error("Something went wornd, Book didn't delete");
+      toast.error("Something went wrong. Book wasn't deleted.");
     }
   };
 
   return (
     <main className="min-h-screen">
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-
         {/* Page Heading */}
         <div className="mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
           <div>
@@ -129,10 +136,7 @@ export default function MyBooksEdit({
             </p>
           </div>
 
-          <Button
-            onClick={() => router.push("/add-book")}
-            className="gap-2"
-          >
+          <Button onClick={() => router.push("/add-book")} className="gap-2">
             <Plus className="size-4" />
             Add New Book
           </Button>
@@ -140,9 +144,7 @@ export default function MyBooksEdit({
 
         {/* Book Count */}
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">
-            Your Added Books
-          </h2>
+          <h2 className="text-lg font-semibold">Your Added Books</h2>
 
           <p className="text-sm text-muted-foreground">
             {books.length} {books.length === 1 ? "Book" : "Books"}
@@ -222,7 +224,7 @@ export default function MyBooksEdit({
             </div>
 
             <h2 className="text-xl font-semibold">
-              You Haven&apos;t  Added Any Books Yet
+              You Haven&apos;t Added Any Books Yet
             </h2>
 
             <p className="mt-2 max-w-sm text-sm text-muted-foreground">
@@ -257,7 +259,6 @@ export default function MyBooksEdit({
 
           {editingBook && (
             <form onSubmit={handleUpdate} className="space-y-5 pt-2">
-
               {/* Book Title */}
               <div>
                 <label htmlFor="edit-title" className={labelClass}>
@@ -402,12 +403,9 @@ export default function MyBooksEdit({
                   Cancel
                 </Button>
 
-                <Button
-                  type="submit"
-                  className="gap-2"
-                >
-                      <Pencil className="size-4" />
-                      Save Changes
+                <Button type="submit" className="gap-2">
+                  <Pencil className="size-4" />
+                  Save Changes
                 </Button>
               </div>
             </form>
@@ -424,9 +422,7 @@ export default function MyBooksEdit({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>
-              Are you absolutely sure?
-            </AlertDialogTitle>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
 
             <AlertDialogDescription>
               This will permanently delete{" "}
@@ -438,18 +434,15 @@ export default function MyBooksEdit({
           </AlertDialogHeader>
 
           <AlertDialogFooter>
-            <AlertDialogCancel>
-              Cancel
-            </AlertDialogCancel>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
 
             <Button
               variant="destructive"
               onClick={handleDelete}
               className="gap-2"
             >
-                  <Trash2 className="size-4" />
-                  Yes, Delete
-              
+              <Trash2 className="size-4" />
+              Yes, Delete
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
