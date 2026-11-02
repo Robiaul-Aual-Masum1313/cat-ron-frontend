@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import {
   BookOpen,
   Pencil,
@@ -62,6 +62,8 @@ export default function MyBooksEdit({
   const [books, setBooks] = useState(initialBooks);
   const [editingBook, setEditingBook] = useState<Book | null>(null);
   const [deletingBook, setDeletingBook] = useState<Book | null>(null);
+  console.log(editingBook);
+  
 
   // Update Book
   const handleUpdate = async (
@@ -83,9 +85,11 @@ export default function MyBooksEdit({
       const result = await res.json();
       setEditingBook(null);
       toast.success("Book updated successfully!");
+      
     } catch (error) {
       toast.error('Somethinh worng. Book Data not updated');
     } 
+    router.refresh()
   };
 
   // Delete Book
