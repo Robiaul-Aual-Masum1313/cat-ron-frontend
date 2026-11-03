@@ -2,8 +2,11 @@ export const dynamic = "force-dynamic";
 import BookCard from "@/components/books/bookCard";
 import { Book } from "@/types/dataTypes";
 import { BookOpen } from "lucide-react";
+import { Metadata } from "next";
 
-
+export const metadata: Metadata = {
+  title: "All Books",
+};
 
 
 export default async function BooksPage() {

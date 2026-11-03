@@ -12,13 +12,35 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { notFound } from "next/navigation";
 import BorrowBookModal from "@/components/books/BorrowBookModal";
+import { Metadata } from "next";
 
 interface singleBookProps {
   params: {
 bookid: string
   }
 }
+export async function generateMetadata({
+  params,
+}: singleBookProps): Promise<Metadata> {
+  const { bookid } = await params;
 
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/books/${bookid}`
+  );
+
+  if (!res.ok) {
+    return {
+      title: "Book Not Found | BookNook",
+    };
+  }
+
+  const book = await res.json();
+
+  return {
+    title: `${book.title} | BookNook`,
+    description: book.description,
+  };
+}
 
 export default async function BookDetailsPage({params} : singleBookProps) {
   const { bookid } = await params;

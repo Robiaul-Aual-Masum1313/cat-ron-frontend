@@ -5,6 +5,11 @@ import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { Book } from "@/types/dataTypes";
 import MyBooksEdit from "@/components/myBooks/editForm";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'My Books'
+}
 
 export default async function MyBooksPage() {
   // Check authentication

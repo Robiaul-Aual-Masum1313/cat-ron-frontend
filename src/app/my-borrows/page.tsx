@@ -5,7 +5,10 @@ import { auth } from "@/lib/auth";
 // import clientPromise from "@/lib/mongodb";
 import MyBorrowsClient from "@/components/BorrowsBooks/BorrowedBookData";
 import { IBorrowedBook } from "@/types/dataTypes";
-
+import { Metadata } from "next";
+export const metadata: Metadata ={
+  title:"My Borrows"
+}
 
 export default async function MyBorrowsPage() {
   // Check logged-in user
