@@ -11,3 +11,13 @@ export interface Book {
   userimage: string;
   availableCopies: number;
 }
+
+export interface IBorrowedBook {
+  _id: string;
+  BookID: string;
+  BookTitle: string;
+  BookImage: string;
+  UserEmail: string;
+  BorrowDate: string;
+  ReturnDate: string;
+}
