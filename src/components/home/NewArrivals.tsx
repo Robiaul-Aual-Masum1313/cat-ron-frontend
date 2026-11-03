@@ -5,7 +5,7 @@ import { ArrowRight, BookOpen, UserRound } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Book} from "@/types/dataTypes";
 export default async function NewArrivals() {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/books`)
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/new-arrivals`)
         const books: Book[] = await res.json()
   return (<>
           {/* New Arrivals */}

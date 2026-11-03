@@ -37,7 +37,8 @@ export default function AddBookPage() {
         userimage: sessionUser?.image,
         ...formEntries,
         totalCopies: Number(formEntries.totalCopies),
-        availableCopies:  Number(formEntries.totalCopies)
+        availableCopies:  Number(formEntries.totalCopies),
+        addedAt: new Date()
       }
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/books`,{
         method: 'POST',
