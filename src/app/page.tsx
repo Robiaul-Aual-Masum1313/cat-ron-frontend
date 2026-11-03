@@ -1,10 +1,10 @@
-import SwiperSlider from "@/components/home/SwiperSlider";
+import HeroSlider from "@/components/home/HeroSlider";
 
 
 export default function Home() {
   return (
    <>
-    <SwiperSlider/>
+    <HeroSlider/>
 
    </>
   );

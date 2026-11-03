@@ -127,3 +127,23 @@
     @apply font-sans;
     }
 }
+
+
+/* code for swiper slider */
+
+.hero-swiper .swiper-pagination {
+          bottom: 28px !important;
+        }
+
+        .hero-swiper .swiper-pagination-bullet {
+          width: 9px;
+          height: 9px;
+          background: white;
+          opacity: 0.4;
+        }
+
+        .hero-swiper .swiper-pagination-bullet-active {
+          width: 28px;
+          border-radius: 10px;
+          opacity: 1;
+        }
