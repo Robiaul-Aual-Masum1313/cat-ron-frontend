@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { signIn, signUp } from "@/lib/auth-client";
 import { redirect } from "next/navigation";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 export default function RegesterPage() {
   const [enable,setEnable] = useState(true)
@@ -48,7 +49,8 @@ export default function RegesterPage() {
       redirect('/')
     }
     if(error){
-      console.log('from from ' ,error);
+      toast.error('Something went wrong, Please try again')
+      // console.log('from from ' ,error);
       
     }
     

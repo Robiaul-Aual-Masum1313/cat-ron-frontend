@@ -16,13 +16,8 @@ const categories = [
 ];
 
 export default function AddBookPage() {
-
-
     const {data:session} = useSession()
     const sessionUser = session?.user
-
-
-
   const handleSubmit = async (
     e: React.SubmitEvent<HTMLFormElement>
   ) => {

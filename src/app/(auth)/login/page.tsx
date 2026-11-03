@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { signIn } from "@/lib/auth-client";
+import { toast } from "react-toastify";
 
 export default function LoginForm() {
   const handleSignIn = async (e : React.SubmitEvent<HTMLElement>) => {
@@ -25,6 +26,9 @@ export default function LoginForm() {
       ...userData,
       callbackURL: '/'
     })
+    if(error){
+      toast.error('Something went wrong, Please try again')
+    }
   }
   return (
     <div className="flex justify-center items-center h-[80vh]">
