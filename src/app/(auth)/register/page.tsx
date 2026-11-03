@@ -14,7 +14,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { signUp } from "@/lib/auth-client";
+import { signIn, signUp } from "@/lib/auth-client";
 import { redirect } from "next/navigation";
 import { useState } from "react";
 
@@ -30,6 +30,11 @@ export default function RegesterPage() {
     }else{
       setEnable(true)
     }
+  }
+  const handleGoogleSign = async () => {
+    const data = await signIn.social({
+      provider: 'google'
+    })
   }
   const handleSubmit = async (e: React.SubmitEvent<HTMLElement>) => {
     e.preventDefault()
@@ -101,7 +106,7 @@ export default function RegesterPage() {
                 <FieldGroup>
                   <Field>
                     <Button disabled={enable} type="submit">Create Account</Button>
-                    <Button variant="outline" type="button">
+                    <Button onClick={handleGoogleSign} variant="outline" type="button">
                       Sign up with Google
                     </Button>
                     <FieldDescription className="px-6 text-center">
