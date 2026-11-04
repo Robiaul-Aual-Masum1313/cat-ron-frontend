@@ -6,6 +6,7 @@ import { auth } from "@/lib/auth";
 import MyBorrowsClient from "@/components/BorrowsBooks/BorrowedBookData";
 import { IBorrowedBook } from "@/types/dataTypes";
 import { Metadata } from "next";
+import getTokenFromServer from "@/lib/getTokenFromServer";
 export const metadata: Metadata ={
   title:"My Borrows"
 }
@@ -19,33 +20,16 @@ export default async function MyBorrowsPage() {
   if (!session) {
     redirect("/login");
   }
+ const JWTtoken = await getTokenFromServer()
 
-  // Connect to MongoDB
-//   const client = await clientPromise;
-//   const db = client.db(process.env.MONGODB_DB);
-
-const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/borrows/${session?.user.email}`)
+ 
+const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/borrows/${session?.user.email}`,{
+  headers:{
+    authorization: `Bearer ${JWTtoken}`
+  }
+})
 const resData : IBorrowedBook[] = await res.json()
 
-  // Fetch only books borrowed by the logged-in user
-//   const borrowedBooks = await db
-//     .collection("borrows")
-//     .find({
-//       userEmail: session.user.email,
-//     })
-//     .sort({ borrowDate: -1 })
-//     .toArray();
-
-//   // Convert MongoDB values into serializable values
-//   const books: BorrowedBook[] = borrowedBooks.map((borrow) => ({
-//     _id: borrow._id.toString(),
-//     bookId: borrow.bookId.toString(),
-//     bookTitle: borrow.bookTitle,
-//     bookImage: borrow.bookImage,
-//     userEmail: borrow.userEmail,
-//     borrowDate: new Date(borrow.borrowDate).toISOString(),
-//     returnDate: new Date(borrow.returnDate).toISOString(),
-//   }));
 
   return <MyBorrowsClient initialBooks={resData} />;
 }

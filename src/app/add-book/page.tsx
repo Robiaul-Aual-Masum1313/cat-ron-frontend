@@ -6,6 +6,7 @@ import { BookOpen } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
 // import { redirect } from "next/navigation";
 import { toast } from "react-toastify";
+import { getTokenFromClient } from "@/lib/getTokenFromClient";
 
 const categories = [
   "Fiction",
@@ -22,7 +23,7 @@ export default function AddBookPage() {
     e: React.SubmitEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
-
+    const JWTtoken = await getTokenFromClient()
     try {
       const formData = new FormData(e.target);
       const formEntries = Object.fromEntries(formData.entries())
@@ -39,6 +40,7 @@ export default function AddBookPage() {
         method: 'POST',
         headers:{
          "Content-Type": "application/json",
+         authorization: `Bearer ${JWTtoken}`
       },
       body: JSON.stringify(data)
       })
