@@ -16,6 +16,7 @@ import {
 import { toast } from "react-toastify";
 import { Book, IBorrowedBook } from "@/types/dataTypes";
 import { useSession } from "@/lib/auth-client";
+import { getTokenFromClient } from "@/lib/getTokenFromClient";
 
 export default function BorrowBookModal({ book }: { book: Book }) {
   const router = useRouter();
@@ -37,8 +38,13 @@ export default function BorrowBookModal({ book }: { book: Book }) {
       BorrowDate,
       ReturnDate,
     };
+    const JWTtoken = await getTokenFromClient()
     const res1 = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/borrows/${sessionUser?.email}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/borrows/${sessionUser?.email}`,{
+        headers:{
+          authorization: `Bearer ${JWTtoken}`
+        }
+      }
     );
     const data1: IBorrowedBook[] = await res1.json();
     let isBookalreadyAdded;
@@ -48,7 +54,7 @@ export default function BorrowBookModal({ book }: { book: Book }) {
       );
     }
     if (isBookalreadyAdded) {
-      toast.error("This Book Already added");
+      toast.error("You Borrow This Book Already");
     }
     else{
       try {
